@@ -1,25 +1,24 @@
-import logo from './logo.svg';
 import './App.css';
+import { ItemNav } from './atomic/itemNav';
+import { Loadingbar } from './atomic/loadingbar';
+import { CreditBar } from './components/creditBar';
+import { Nav } from './components/nav';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	return (
+		<>
+			<Nav />
+			<div style={{
+				display: "flex",
+				justifyContent: "space-evenly",
+				width: "fit-content",
+			}}>
+				<CreditBar creditType="Obrigatória" color="#0D75FD" creditEarned="111" creditRequired="111" />
+				<CreditBar creditType="Eletiva" color="#00D0FF" creditEarned="56" creditRequired="56" />
+				<CreditBar creditType="Livre" color="#00E1CF" creditEarned="24" creditRequired="24" />
+			</div>
+		</>
+	)
 }
 
 export default App;
