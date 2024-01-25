@@ -1,10 +1,10 @@
 import './App.css';
-import { ItemNav } from './atomic/itemNav';
-import { Loadingbar } from './atomic/loadingbar';
 import { CreditBar } from './components/creditBar';
 import { Nav } from './components/nav';
+import { getData } from './util/driveRequest';
 
 function App() {
+	getData();
 	return (
 		<>
 			<Nav />
