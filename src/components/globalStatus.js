@@ -1,7 +1,7 @@
 import React from "react";
 import { CreditBar } from "../atomic/creditBar";
 
-export const Status = () => {
+export const GlobalStatus = () => {
     return (
         <div style={{
             display: "flex",

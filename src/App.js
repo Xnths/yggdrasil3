@@ -1,22 +1,19 @@
 import './App.css';
-import { CreditBar } from './components/creditBar';
+import { CreditBar } from './atomic/creditBar';
+import { Hexagon } from './atomic/hexagon';
+import { Title } from './atomic/title';
+import { GlobalStatus } from './components/globalStatus';
 import { Nav } from './components/nav';
+import { OptativasStatus } from './components/optativasStatus';
 import { getData } from './util/driveRequest';
 
 function App() {
-	getData();
+	
 	return (
 		<>
 			<Nav />
-			<div style={{
-				display: "flex",
-				justifyContent: "space-evenly",
-				width: "fit-content",
-			}}>
-				<CreditBar creditType="Obrigatória" color="#0D75FD" creditEarned="111" creditRequired="111" />
-				<CreditBar creditType="Eletiva" color="#00D0FF" creditEarned="56" creditRequired="56" />
-				<CreditBar creditType="Livre" color="#00E1CF" creditEarned="24" creditRequired="24" />
-			</div>
+			<GlobalStatus />
+			<OptativasStatus />
 		</>
 	)
 }

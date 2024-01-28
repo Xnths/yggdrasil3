@@ -7,6 +7,10 @@ export const Nav = () => {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            paddingTop: "8px",
+            paddingLeft: "16px",
+            paddingRight: "16px",
+            paddingBottom: "16px",
         }}>
             <ItemNav active={true} section="Dashboard" />
             <ItemNav active={false} section="Obrigatórias" />
