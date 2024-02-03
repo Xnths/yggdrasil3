@@ -14,7 +14,7 @@ export const Hexagon = (props) => {
 
   return (
     <svg
-        style={{filter: 'drop-shadow(0px 4px 4px rgb(0, 0, 0, 0.25)'}}
+        style={{...props.style, filter: props.shadow}}
         width={2 * radius} height={2 * radius} xmlns="http://www.w3.org/2000/svg" viewBox={viewBox}>
       <polygon points={points.join(' ')} fill={props.color}/>
     </svg>
