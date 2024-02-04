@@ -23,7 +23,7 @@ function App() {
 				padding: "8px 8px"
 			}}>
 				<div>
-					<Title color="black" fontSize="32px" title="Geral" />
+					<Title color="black" fontSize="32px" title="Obrigatórias" />
 					<div style={{
 						display: "flex",
 						flexDirection: "row",
@@ -31,9 +31,7 @@ function App() {
 					}}>
 						<SubjectIcon color="#FF0000" subjectCode="MAC0101" subjectName="Integação na Universidade e na Profissão" />
 						<SubjectIcon color="#FF0000" subjectCode="MAC0101" subjectName="Integação na Universidade e na Profissão" />
-						
 					</div>
-					
 				</div>
 
 			</div>

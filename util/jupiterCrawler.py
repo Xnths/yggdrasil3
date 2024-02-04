@@ -1,11 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
-import csv
+import json
+import os
 
 MANDATORY_TABLE = 0
 ELECTIVE_STATISTICS_TABLE = 9
-ELECTIVE_SCIENCE_TABLE = 10
-ELECTIVE_HUMANITY_TABLE = 11
+ELECTIVE_SCIENCE_TABLE = 11
+ELECTIVE_HUMANITY_TABLE = 10
 ELECTIVE_TABLE = 12
 
 TOTAL_SEMESTERS = 8
@@ -86,6 +87,137 @@ def get_mandatory_subjects():
 
             mandatory_subject.append(mandatory_subject_info)
 
-        print(mandatory_subject)
+        return mandatory_subject
 
-get_mandatory_subjects()
+def get_elective_statistics_subjects():
+    """
+    It returns a dictonary with the elective statistics subjects.
+
+    Returns:
+    (dictionary) elective statistics subject in the form
+        {
+            <subject_code>: {...},
+            <subject_code>: {...},
+            ...
+        }
+    """
+    url = f"https://bcc.ime.usp.br/grade-atual/"
+
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'lxml')
+        
+        table = soup.select('table tbody')[ELECTIVE_STATISTICS_TABLE]
+
+        mandotory_subject_codes = [row.text.strip() for row in table.select('td')[::3] if row.text.strip() != '.\xa0.\xa0.']
+
+        elective_subject_info = { f'{x}': get_subject_info(x) for x in mandotory_subject_codes }
+
+        return elective_subject_info
+
+def get_elective_science_subjects():
+    """
+    It returns a dictonary with the elective statistics subjects.
+
+    Returns:
+    (dictionary) elective statistics subject in the form
+        {
+            <subject_code>: {...},
+            <subject_code>: {...},
+            ...
+        }
+    """
+    url = f"https://bcc.ime.usp.br/grade-atual/"
+
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'lxml')
+        
+        table = soup.select('table tbody')[ELECTIVE_SCIENCE_TABLE]
+
+        mandotory_subject_codes = [row.text.strip() for row in table.select('td')[::3] if row.text.strip() != '.\xa0.\xa0.']
+
+        elective_subject_info = { f'{x}': get_subject_info(x) for x in mandotory_subject_codes }
+
+        return elective_subject_info
+
+def get_elective_humanity_subjects():
+    """
+    It returns a dictonary with the elective statistics subjects.
+
+    Returns:
+    (dictionary) elective statistics subject in the form
+        {
+            <subject_code>: {...},
+            <subject_code>: {...},
+            ...
+        }
+    """
+    url = f"https://bcc.ime.usp.br/grade-atual/"
+
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'lxml')
+        
+        table = soup.select('table tbody')[ELECTIVE_HUMANITY_TABLE]
+
+        mandotory_subject_codes = [row.text.strip() for row in table.select('td')[::3] if row.text.strip() != '.\xa0.\xa0.']
+
+        elective_subject_info = { f'{x}': get_subject_info(x) for x in mandotory_subject_codes }
+
+        return elective_subject_info
+    
+def get_elective_subjects():
+    """
+    It returns a dictonary with the elective statistics subjects.
+
+    Returns:
+    (dictionary) elective statistics subject in the form
+        {
+            <subject_code>: {...},
+            <subject_code>: {...},
+            ...
+        }
+    """
+    url = f"https://bcc.ime.usp.br/grade-atual/"
+
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'lxml')
+        
+        table = soup.select('table tbody')[ELECTIVE_TABLE]
+
+        mandotory_subject_codes = [row.text.strip() for row in table.select('td')[::3] if row.text.strip() != '.\xa0.\xa0.']
+
+        elective_subject_info = { f'{x}': get_subject_info(x) for x in mandotory_subject_codes }
+
+        return elective_subject_info
+
+def get_all_subjects_and_save_to_json():
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_directory, "subjects.json")
+
+    mandatory_subjects = get_mandatory_subjects()
+    elective_statistics_subjects = get_elective_statistics_subjects()
+    elective_science_subjects = get_elective_science_subjects()
+    elective_humanity_subjects = get_elective_humanity_subjects()
+    elective_subjects = get_elective_subjects()
+
+    all_subjects = {
+        'mandatory': mandatory_subjects,
+        'elective_statistics': elective_statistics_subjects,
+        'elective_science': elective_science_subjects,
+        'elective_humanity': elective_humanity_subjects,
+        'elective': elective_subjects
+    }
+
+    with open(file_path, 'w') as json_file:
+        json.dump(all_subjects, json_file, indent=4)
+
+    return all_subjects
+
+print(get_all_subjects_and_save_to_json())
