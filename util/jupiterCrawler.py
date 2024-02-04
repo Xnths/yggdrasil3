@@ -2,12 +2,33 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 
-def get_info_subjects(subject_code):
-    urlInfo = f"https://uspdigital.usp.br/jupiterweb/obterDisciplina?nomdis=&sgldis={subject_code}"
-    urlType = f"https://uspdigital.usp.br/jupiterweb/obterTurma?sgldis={subject_code}"
+MANDATORY_TABLE = 0
+ELECTIVE_STATISTICS_TABLE = 9
+ELECTIVE_SCIENCE_TABLE = 10
+ELECTIVE_HUMANITY_TABLE = 11
+ELECTIVE_TABLE = 12
 
-    response = requests.get(urlInfo)
+TOTAL_SEMESTERS = 8
 
+def get_subject_info(subject_code):
+    """
+    Giving the function a valid subject_code, it returns a dictionary with the subject's name, class credits, project credits and description. The information is obtained from Jupiter Web, USP service that provides the details of each subject the University offers.
+
+    Parameters:
+    - subject_code: (string) a valid code, generally, contains 3 letters and 4 numbers. In order to be precise, it is reccomended to look for the subject in Jupiter's web site.
+    
+    Returns:
+    (dictionary) subject's information in the form:
+        {
+            'subject_name': ...,
+            'subject_class_credits': ...,
+            'subject_project_credits: ...,
+            'subject_description': ...
+        }
+    """
+    url = f"https://uspdigital.usp.br/jupiterweb/obterDisciplina?nomdis=&sgldis={subject_code}"
+
+    response = requests.get(url)
 
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'lxml')
@@ -17,6 +38,54 @@ def get_info_subjects(subject_code):
         subject_class_credits = soup.select('div#layout_principal div#layout_conteudo span.txt_arial_8pt_gray')[0].text.strip()
         subject_project_credits = soup.select('div#layout_principal div#layout_conteudo span.txt_arial_8pt_gray')[1].text.strip()
 
-        print([subject_code, subject_name, subject_description, subject_class_credits,subject_project_credits])
+        subject_info = ({
+            'subject_name': subject_name,
+            'subject_class_credits': subject_class_credits,
+            'subject_project_credits': subject_project_credits,
+            'subject_description': subject_description
+        })
 
-get_info_subjects('mac0338')
+        return subject_info
+
+def get_mandatory_subjects():
+    """
+    It returns a dictonary with the mandatory subjects by semester with the information in it.
+
+    Returns:
+    (list) mandatory subject by semesters in the form
+        [
+            {
+                <subject_code>: {...},
+                <subject_code>: {...},
+                ...
+            },
+            {
+                <subject_code>: {...},
+                <subject_code>: {...},
+                ...
+            },
+            ...
+        ]
+    Each index represents the semesters from 0 to 7
+    """
+    url = f"https://bcc.ime.usp.br/grade-atual/"
+
+    response = requests.get(url)
+
+    mandatory_subject = []
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'lxml')
+        
+        for semester in range(TOTAL_SEMESTERS):
+            table = soup.select('table tbody')[MANDATORY_TABLE + semester]
+
+            mandotory_subject_codes = [row.text.strip() for row in table.select('td')[::3] if row.text.strip() != '.\xa0.\xa0.']
+
+            mandatory_subject_info = { f'{x}': get_subject_info(x) for x in mandotory_subject_codes }
+
+            mandatory_subject.append(mandatory_subject_info)
+
+        print(mandatory_subject)
+
+get_mandatory_subjects()
