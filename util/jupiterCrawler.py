@@ -21,15 +21,16 @@ def get_subject_info(subject_code):
     Returns:
     (dictionary) subject's information in the form:
         {
-            'subject_name': ...,
-            'subject_class_credits': ...,
-            'subject_project_credits: ...,
-            'subject_description': ...
+            'code': ...,
+            'name': ...,
+            'class_credits': ...,
+            'project_credits: ...,
+            'description': ...
         }
     """
     url = f"https://uspdigital.usp.br/jupiterweb/obterDisciplina?nomdis=&sgldis={subject_code}"
 
-    response = requests.get(url)
+    response = requests.get(url, {'Accept-Charset': 'UTF-8'})
 
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'lxml')
@@ -40,10 +41,11 @@ def get_subject_info(subject_code):
         subject_project_credits = soup.select('div#layout_principal div#layout_conteudo span.txt_arial_8pt_gray')[1].text.strip()
 
         subject_info = ({
-            'subject_name': subject_name,
-            'subject_class_credits': subject_class_credits,
-            'subject_project_credits': subject_project_credits,
-            'subject_description': subject_description
+            'code': subject_code,
+            'name': subject_name,
+            'class_credits': subject_class_credits,
+            'project_credits': subject_project_credits,
+            'description': subject_description
         })
 
         return subject_info
@@ -55,16 +57,16 @@ def get_mandatory_subjects():
     Returns:
     (list) mandatory subject by semesters in the form
         [
-            {
-                <subject_code>: {...},
-                <subject_code>: {...},
+            [
+                {...},
+                {...},
                 ...
-            },
-            {
-                <subject_code>: {...},
-                <subject_code>: {...},
+            ],
+            [
+                {...},
+                {...},
                 ...
-            },
+            ],
             ...
         ]
     Each index represents the semesters from 0 to 7
@@ -83,7 +85,7 @@ def get_mandatory_subjects():
 
             mandotory_subject_codes = [row.text.strip() for row in table.select('td')[::3] if row.text.strip() != '.\xa0.\xa0.']
 
-            mandatory_subject_info = { f'{x}': get_subject_info(x) for x in mandotory_subject_codes }
+            mandatory_subject_info = [ get_subject_info(x) for x in mandotory_subject_codes ]
 
             mandatory_subject.append(mandatory_subject_info)
 
@@ -95,11 +97,11 @@ def get_elective_statistics_subjects():
 
     Returns:
     (dictionary) elective statistics subject in the form
-        {
-            <subject_code>: {...},
-            <subject_code>: {...},
+        [
+            {...},
+            {...},
             ...
-        }
+        ]
     """
     url = f"https://bcc.ime.usp.br/grade-atual/"
 
@@ -110,9 +112,9 @@ def get_elective_statistics_subjects():
         
         table = soup.select('table tbody')[ELECTIVE_STATISTICS_TABLE]
 
-        mandotory_subject_codes = [row.text.strip() for row in table.select('td')[::3] if row.text.strip() != '.\xa0.\xa0.']
+        subject_codes = [row.text.strip() for row in table.select('td')[::3] if row.text.strip() != '.\xa0.\xa0.']
 
-        elective_subject_info = { f'{x}': get_subject_info(x) for x in mandotory_subject_codes }
+        elective_subject_info = [ get_subject_info(x) for x in subject_codes ]
 
         return elective_subject_info
 
@@ -122,11 +124,11 @@ def get_elective_science_subjects():
 
     Returns:
     (dictionary) elective statistics subject in the form
-        {
-            <subject_code>: {...},
-            <subject_code>: {...},
+        [
+            {...},
+            {...},
             ...
-        }
+        ]
     """
     url = f"https://bcc.ime.usp.br/grade-atual/"
 
@@ -137,9 +139,9 @@ def get_elective_science_subjects():
         
         table = soup.select('table tbody')[ELECTIVE_SCIENCE_TABLE]
 
-        mandotory_subject_codes = [row.text.strip() for row in table.select('td')[::3] if row.text.strip() != '.\xa0.\xa0.']
+        subject_codes = [row.text.strip() for row in table.select('td')[::3] if row.text.strip() != '.\xa0.\xa0.']
 
-        elective_subject_info = { f'{x}': get_subject_info(x) for x in mandotory_subject_codes }
+        elective_subject_info = [ get_subject_info(x) for x in subject_codes ]
 
         return elective_subject_info
 
@@ -149,11 +151,11 @@ def get_elective_humanity_subjects():
 
     Returns:
     (dictionary) elective statistics subject in the form
-        {
-            <subject_code>: {...},
-            <subject_code>: {...},
+        [
+            {...},
+            {...},
             ...
-        }
+        ]
     """
     url = f"https://bcc.ime.usp.br/grade-atual/"
 
@@ -164,9 +166,9 @@ def get_elective_humanity_subjects():
         
         table = soup.select('table tbody')[ELECTIVE_HUMANITY_TABLE]
 
-        mandotory_subject_codes = [row.text.strip() for row in table.select('td')[::3] if row.text.strip() != '.\xa0.\xa0.']
+        subject_codes = [row.text.strip() for row in table.select('td')[::3] if row.text.strip() != '.\xa0.\xa0.']
 
-        elective_subject_info = { f'{x}': get_subject_info(x) for x in mandotory_subject_codes }
+        elective_subject_info = [ get_subject_info(x) for x in subject_codes ]
 
         return elective_subject_info
     
@@ -176,11 +178,11 @@ def get_elective_subjects():
 
     Returns:
     (dictionary) elective statistics subject in the form
-        {
-            <subject_code>: {...},
-            <subject_code>: {...},
+        [
+            {...},
+            {...},
             ...
-        }
+        ]
     """
     url = f"https://bcc.ime.usp.br/grade-atual/"
 
@@ -191,15 +193,15 @@ def get_elective_subjects():
         
         table = soup.select('table tbody')[ELECTIVE_TABLE]
 
-        mandotory_subject_codes = [row.text.strip() for row in table.select('td')[::3] if row.text.strip() != '.\xa0.\xa0.']
+        subject_codes = [row.text.strip() for row in table.select('td')[::3] if row.text.strip() != '.\xa0.\xa0.']
 
-        elective_subject_info = { f'{x}': get_subject_info(x) for x in mandotory_subject_codes }
+        elective_subject_info = [ get_subject_info(x) for x in subject_codes ]
 
         return elective_subject_info
 
 def get_all_subjects_and_save_to_json():
     current_directory = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(current_directory, "subjects.json")
+    file_path = os.path.join(current_directory, "../src/util/subjects.json")
 
     mandatory_subjects = get_mandatory_subjects()
     elective_statistics_subjects = get_elective_statistics_subjects()
@@ -215,8 +217,8 @@ def get_all_subjects_and_save_to_json():
         'elective': elective_subjects
     }
 
-    with open(file_path, 'w') as json_file:
-        json.dump(all_subjects, json_file, indent=4)
+    with open(file_path, 'w', encoding='UTF-8') as json_file:
+        json.dump(all_subjects, json_file, indent=4, ensure_ascii=False)
 
     return all_subjects
 

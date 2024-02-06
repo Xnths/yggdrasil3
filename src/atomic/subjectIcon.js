@@ -13,18 +13,24 @@ export const SubjectIcon = (props) => {
                 position: "absolute",
                 top: "50%",
                 left: "50%",
-                transform: "translate(-50%, -50%)",
-                textAlign: "center"
+                transform: "translate(-50%, -55%)",
+                textAlign: "center",
+                height: "93px",
             }}>
                 <span style={{
                     fontWeight: "800",
                     fontSize: "24px"
                 }}>{props.subjectCode}</span>
                 <br/>
-                <span style={{
-                    color: "#636363",
-                    fontSize: "10px",
-                }}>{props.subjectName}</span>
+                <div style={{
+                    height: "64px",
+                    overflowY: "hidden",
+                }}>
+                    <span style={{
+                        color: "#636363",
+                        fontSize: "10px",
+                    }}>{props.subjectName}</span>
+                </div>
             </div>
         </div>
     )
