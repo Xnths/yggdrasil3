@@ -2,15 +2,19 @@ import React, { useState } from "react";
 import { globals } from "../globals";
 
 export const ItemNav = (props) => {
-    const [active, setActive] = useState(props.active);
+    const handleClick = () => {
+        if (props.onClick) {
+            props.onClick();
+        }
+    }
 
     const activeNav = () => {
         return (
-            <div style={{
+            <div onClick={handleClick} style={{
                 fontSize: globals.defaultFont,
                 padding: "8px 16px",
                 width: "fit-content",
-                boxShadow: active ? "0 4px 0 #000000" : "none",
+                boxShadow: props.active ? "0 4px 0 #000000" : "none",
             }}>
                 {props.section}
             </div>
