@@ -16,7 +16,12 @@ export const ItemNav = (props) => {
                 width: "fit-content",
                 boxShadow: props.active ? "0 4px 0 #000000" : "none",
             }}>
-                {props.section}
+                <a style={{
+                    textDecoration: "none",
+                    color: "black",
+                }} href={`#${props.section}`}>
+                    {props.section}
+                </a>
             </div>
         );
     };
